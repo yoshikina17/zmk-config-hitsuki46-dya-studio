@@ -1,0 +1,5 @@
+config SHIELD_HITSUKI46_R
+    def_bool $(shields_list_contains,hitsuki46_R)
+
+config SHIELD_HITSUKI46_L
+    def_bool $(shields_list_contains,hitsuki46_L)
