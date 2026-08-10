@@ -5,7 +5,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 //=============================================================================
-// Trackball Mode Configuration (simplified for initial build)
+// Trackball Mode Configuration (simplified)
 // 0 = CURSOR mode, 1 = SCROLL mode
 //=============================================================================
 #define LEFT_TRACKBALL_MODE  1
@@ -30,7 +30,6 @@
 &trackball_left_split {
 };
 
-// Left trackball listener (from peripheral) - simplified
 / {
     trackball_left_listener: trackball_left_listener {
         compatible = "zmk,input-listener";
@@ -49,7 +48,6 @@
     };
 };
 
-// Right trackball listener (local) - simplified
 &trackball_right_listener {
     status = "okay";
     device = <&trackball>;
@@ -112,16 +110,14 @@
 
     trackball: trackball@0 {
         status = "okay";
-        compatible = "pixart,pmw3610-alt";
+        compatible = "cormoran,pmw3610";
         reg = <0>;
-        label = "TRACKBALL";
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio1 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         evt-type = <2>;
         x-input-code = <0>;
         y-input-code = <1>;
         cpi = <800>;
-        invert-x;
-        invert-y;
+        settings-id = "right";
     };
 };
