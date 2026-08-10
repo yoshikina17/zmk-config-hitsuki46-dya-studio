@@ -2,4 +2,3 @@ name: hitsuki46
 build:
   settings:
     board_root: .
-    snippet_root: .
