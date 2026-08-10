@@ -44,11 +44,10 @@ jobs:
           mkdir -p artifacts
           find ./build -type f -path '*/zephyr/zmk.uf2' | while read -r f; do
             echo "Found: $f"
-            # Extract a meaningful name from the path
             name=$(echo "$f" | sed -E 's|.*/([^/]+)/zephyr/zmk.uf2|\1|')
             cp "$f" "artifacts/${name}.uf2"
           done
-          ls -la artifacts/
+          ls -la artifacts/ || true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

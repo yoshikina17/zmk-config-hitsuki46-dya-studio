@@ -8,14 +8,8 @@ manifest:
       url-base: https://github.com/cormoran
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: badjeff
-      url-base: https://github.com/badjeff
     - name: sekigon-gonnoc
       url-base: https://github.com/sekigon-gonnoc
-    - name: gohanda11
-      url-base: https://github.com/gohanda11
-    - name: iwk7273
-      url-base: https://github.com/iwk7273
   projects:
     - name: zmk-west-commands
       import: true
@@ -46,6 +40,7 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
+    # DYA Studio core modules
     - name: zmk-driver-pmw3610-with-custom-studio-rpc
     - name: zmk-feature-os-detection
     - name: zmk-feature-default-layer
@@ -62,20 +57,13 @@ manifest:
     - name: zmk-feature-custom-settings
     - name: zmk-feature-runtime-combo
     - name: zmk-feature-runtime-macro
-    # Optional / development
-    - name: zmk-module-devtool
     - name: zmk-feature-studio-rpc-perf
     - name: zmk-feature-zephyr-setting-expose
     - name: zmk-feature-device-info
-    - name: zmk-feature-kscan-diagnostics
-    - name: zmk-feature-watchdog
     - name: zmk-feature-fast-keymap
-    # hitsuki specific
+    # Hitsuki46 NiMH battery
     - name: zmk-feature-non-lipo-battery-management
       remote: sekigon-gonnoc
-      revision: main
-    - name: zmk-feature-xy_clipper
-      remote: iwk7273
       revision: main
   self:
     path: config

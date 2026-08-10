@@ -1,5 +1,5 @@
 # manifest to setup dependencies under <west topdir>/dependencies
-# should be initialized with cd repo && west init -l config
+# should be initialized with: west init -l config --mf west-standalone.yml
 manifest:
   self:
     import: west-standalone.yml

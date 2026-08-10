@@ -1,36 +1,28 @@
-# ZMK Config for Hitsuki46 with Latest DYA Studio Support
+# Hitsuki46 ZMK — DYA Studio 対応版
 
-This repository provides ZMK firmware configuration for the Hitsuki46 split keyboard, adapted to support the latest [DYA Studio](https://studio.dya.cormoran.works/) based on [cormoran/zmk-keyboard-dya2 v2.0](https://github.com/cormoran/zmk-keyboard-dya2/releases/tag/v2.0).
+元リポジトリ: [yoshikina17/zmk-config-hitsuki46](https://github.com/yoshikina17/zmk-config-hitsuki46)  
+参考: [cormoran/zmk-keyboard-dya2](https://github.com/cormoran/zmk-keyboard-dya2) (v2.0 / main+dya)
 
-## Features
-- Dual trackball support (PMW3610)
-- NiMH battery support
-- WS2812 LED status
-- Full DYA Studio compatibility (keymap, trackball settings, macros, combos, OS detection, battery history, BLE management, etc.)
-- Based on ZMK main+dya (v0.4 era) + cormoran modules
+## 変更点
 
-## Hardware
-- MCU: Seeed XIAO nRF52840 (xiao_ble)
-- Based on DYA Dash schematic (cormoran)
-- 46 keys split
+- ZMK を **cormoran `main+dya`** に変更
+- DYA Studio 用モジュール一式を追加
+- PMW3610 を **cormoran studio-rpc 対応ドライバ** に変更
+- デュアルトラックボール・NiMH バッテリー・マトリクスは元のまま
 
-## Build
-GitHub Actions will build on push. Download UF2 from Actions artifacts.
+## ビルド
 
-Or local:
-```
-west init -l config
-west update
-west zmk-build  # or use the build matrix
-```
+GitHub Actions が push で自動ビルドします。  
+Artifacts から `hitsuki46_R.uf2` / `hitsuki46_L.uf2` をダウンロードしてフラッシュしてください。
 
-## Notes
-- This is an initial adaptation. Trackball runtime processors and some LED animation may need further tuning for dual trackball + Studio.
-- Refer to gohanda11/zmk-config-hitsuki46 for original pinouts and to cormoran/zmk-keyboard-dya2 for Studio features.
-- Flash left/right UF2 accordingly. Use settings_reset if needed.
-- Unlock Studio with &studio_unlock key if locking is enabled.
+## DYA Studio
 
-## Credits
-- Original Hitsuki46 ZMK: gohanda11
-- DYA / DYA Studio / modules: cormoran
-- PMW3610: badjeff / cormoran custom
+https://studio.dya.cormoran.works/
+
+初回は USB 接続 + `studio-rpc-usb-uart` スニペット付きファームで接続できます。
+
+## 注意
+
+- 初回ビルドは west モジュール取得で時間がかかります
+- トラックボールの invert / CPI は Studio から調整可能
+- LED (WS2812) は基本点灯のみ（元の gohanda widget は一旦外しています）
