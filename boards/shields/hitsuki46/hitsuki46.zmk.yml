@@ -1,0 +1,8 @@
+file_format: "1"
+id: hitsuki46
+name: HITSUKI46
+type: shield
+url: https://github.com/yoshikina17/zmk-config-hitsuki46-dya-studio
+requires: [xiao_ble]
+features:
+  - keys
