@@ -1,0 +1,170 @@
+#include "hitsuki46.dtsi"
+#include <dt-bindings/zmk/input_transform.h>
+#include <dt-bindings/input/input-event-codes.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/pointing.h>
+
+//=============================================================================
+// Trackball Mode Configuration
+// 0 = CURSOR mode (mouse cursor movement)
+// 1 = SCROLL mode (scroll operation)
+//=============================================================================
+#define LEFT_TRACKBALL_MODE  1   // Left trackball mode (0/1)
+#define RIGHT_TRACKBALL_MODE 0   // Right trackball mode (0/1)
+//=============================================================================
+
+&default_transform {
+    col-offset = <6>;
+};
+
+&kscan0 {
+        col-gpios
+            = <&xiao_d 10 GPIO_ACTIVE_HIGH>
+            , <&xiao_d 9 GPIO_ACTIVE_HIGH>
+            , <&xiao_d 8 GPIO_ACTIVE_HIGH>
+            , <&xiao_d 7 GPIO_ACTIVE_HIGH>
+            , <&gpio0 10 GPIO_ACTIVE_HIGH>
+            , <&gpio0 31 GPIO_ACTIVE_HIGH>
+            ;
+};
+
+// Configure trackball_left_split to receive data from peripheral's trackball_left
+&trackball_left_split {
+};
+
+// XY Clipper - clips diagonal input to dominant axis only
+/ {
+    xy_clipper: xy_clipper {
+        compatible = "zmk,input-processor-xy-clipper";
+        #input-processor-cells = <0>;
+        threshold = <20>;  // Values below this threshold on the weaker axis are clipped
+        invert-x = <0>;
+        invert-y = <0>;
+    };
+};
+
+// Left trackball listener (from peripheral)
+/ {
+    trackball_left_listener: trackball_left_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        device = <&trackball_left_split>;
+
+#if LEFT_TRACKBALL_MODE == 1
+        // SCROLL MODE: Always scroll
+        input-processors =
+            <&xy_clipper>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_scaler 2 5>;
+#else
+        // CURSOR MODE: Normal cursor with auto mouse layer
+        // Y-axis transform needed because sensor has invert-x/y for 180deg orientation
+        // but cursor needs correct direction
+        input-processors =
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_temp_layer 1 700>;
+
+        // Optional: Enable scroll on layer 5
+        scroller {
+            layers = <5>;
+            input-processors =
+                <&xy_clipper>,
+                <&zip_xy_to_scroll_mapper>,
+                <&zip_scroll_scaler 2 5>;
+        };
+#endif
+    };
+};
+
+// Right trackball listener (local)
+&trackball_right_listener {
+    status = "okay";
+    device = <&trackball>;
+
+#if RIGHT_TRACKBALL_MODE == 1
+    // SCROLL MODE: Always scroll
+    input-processors =
+        <&xy_clipper>,
+        <&zip_xy_to_scroll_mapper>,
+        <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+        <&zip_scroll_scaler 2 5>;
+#else
+    // CURSOR MODE: Normal cursor with auto mouse layer
+    input-processors = <&zip_temp_layer 1 700>;
+
+    // Enable scroll on layer 5
+    scroller {
+        layers = <5>;
+        input-processors =
+            <&xy_clipper>,
+            <&zip_xy_to_scroll_mapper>,
+            <&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,
+            <&zip_scroll_scaler 2 5>;
+    };
+#endif
+};
+
+&pinctrl {
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+        };
+    };
+
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+            low-power-enable;
+        };
+    };
+
+    spi1_default: spi1_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 20)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 19)>,
+                <NRF_PSEL(SPIM_MISO, 0, 19)>;
+        };
+    };
+
+    spi1_sleep: spi1_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 20)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 19)>,
+                <NRF_PSEL(SPIM_MISO, 0, 19)>;
+            low-power-enable;
+        };
+    };
+};
+
+&xiao_serial { status = "disabled"; };
+
+&spi0 {
+    status = "okay";
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-1 = <&spi0_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+
+    trackball: trackball@0 {
+        status = "okay";
+        compatible = "pixart,pmw3610-alt";
+        reg = <0>;
+        label = "TRACKBALL";
+        spi-max-frequency = <2000000>;
+        irq-gpios = <&gpio1 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        evt-type = <2>;  // INPUT_EV_REL
+        x-input-code = <0>;  // INPUT_REL_X
+        y-input-code = <1>;  // INPUT_REL_Y
+
+        cpi = <800>;
+
+        // 180 degree orientation
+        invert-x;
+        invert-y;
+    };
+};
