@@ -1,0 +1,81 @@
+manifest:
+  version: 1.2
+  defaults:
+    remote: cormoran
+    revision: main
+  remotes:
+    - name: cormoran
+      url-base: https://github.com/cormoran
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: badjeff
+      url-base: https://github.com/badjeff
+    - name: sekigon-gonnoc
+      url-base: https://github.com/sekigon-gonnoc
+    - name: gohanda11
+      url-base: https://github.com/gohanda11
+    - name: iwk7273
+      url-base: https://github.com/iwk7273
+  projects:
+    - name: zmk-west-commands
+      import: true
+    - name: zmk
+      import:
+        file: app/west.yml
+      clone-depth: 1
+      revision: main+dya
+    - name: zephyr
+      revision: v4.1.0+zmk-fixes+nrf-half-duplex-uart
+      clone-depth: 1
+      import:
+        name-blocklist:
+          - ci-tools
+          - hal_altera
+          - hal_cypress
+          - hal_infineon
+          - hal_microchip
+          - hal_nxp
+          - hal_openisa
+          - hal_xtensa
+          - hal_st
+          - hal_ti
+          - loramac-node
+          - mcuboot
+          - mcumgr
+          - net-tools
+          - openthread
+          - edtt
+          - trusted-firmware-m
+    - name: zmk-driver-pmw3610-with-custom-studio-rpc
+    - name: zmk-feature-os-detection
+    - name: zmk-feature-default-layer
+      revision: codex/custom-rpc-rewrite
+      import: true
+    - name: zmk-driver-animation
+    - name: zmk-driver-ext-power-transient
+    - name: zmk-module-ble-management
+    - name: zmk-module-battery-history
+    - name: zmk-module-runtime-input-processor
+    - name: zmk-module-settings-rpc
+    - name: zmk-feature-input-stream
+    - name: zmk-feature-module-physical-layout
+    - name: zmk-feature-custom-settings
+    - name: zmk-feature-runtime-combo
+    - name: zmk-feature-runtime-macro
+    # Optional / development
+    - name: zmk-module-devtool
+    - name: zmk-feature-studio-rpc-perf
+    - name: zmk-feature-zephyr-setting-expose
+    - name: zmk-feature-device-info
+    - name: zmk-feature-kscan-diagnostics
+    - name: zmk-feature-watchdog
+    - name: zmk-feature-fast-keymap
+    # hitsuki specific
+    - name: zmk-feature-non-lipo-battery-management
+      remote: sekigon-gonnoc
+      revision: main
+    - name: zmk-feature-xy_clipper
+      remote: iwk7273
+      revision: main
+  self:
+    path: config
