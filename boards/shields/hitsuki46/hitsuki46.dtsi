@@ -6,7 +6,6 @@
     chosen {
         zmk,physical-layout = &hitsuki46_physical_layout;
         zmk,battery = &non_lipo_battery;
-        zmk,ws2812-widget = &led_strip;
     };
 
     aliases {
@@ -94,7 +93,6 @@
                 ;
     };
 
-    // Split input device for forwarding left trackball data from peripheral to central
     split_inputs: split_inputs {
         compatible = "zmk,split-inputs";
         #address-cells = <1>;
@@ -106,23 +104,19 @@
         };
     };
 
-
-
     trackball_right_listener: trackball_right_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
 
-    // LED Power Control for WS2812
     led_power: led_power {
         compatible = "zmk,ext-power-generic";
-        control-gpios = <&gpio0 15 (GPIO_ACTIVE_LOW)>; // P-channel MOSFET control
+        control-gpios = <&gpio0 15 (GPIO_ACTIVE_LOW)>;
         label = "LED Power Control";
         init-delay-ms = <50>;
     };
 
     vbatt: vbatt {
-        // Disable default battery monitoring
         status = "disabled";
     };
     non_lipo_battery: non_lipo_battery {
@@ -145,7 +139,6 @@
     };
 };
 
-// SPI1 for WS2812 LED control
 &spi1 {
     status = "okay";
     compatible = "nordic,nrf-spim";
@@ -164,7 +157,6 @@
     };
 };
 
-// NFC pins as GPIO (Zephyr 4.1)
 &uicr {
     nfct-pins-as-gpios;
 };
